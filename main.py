@@ -105,10 +105,6 @@ async def on_message(message):
       channel = message.channel
       await channel.send('I dont have kick perms tell an owner or admin to fix this if they want my bot to use -kick')
 
-@client.event
-async def on_guild_join(guild):
- author = client.get_user(843177851552530504)
- await author.send(f"""Hey your bot has joined {guild.name} its owner {guild.owner}""")
 
 #ignore this its just used to make the bot be almost active 24/7
 keep_alive()
