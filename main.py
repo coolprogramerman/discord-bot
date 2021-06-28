@@ -53,6 +53,7 @@ async def on_message(message):
         [
         Button(label = "if it says interaction failed press this", style = 1, id="fix"),
         Button(label = "yes",style = 3, id = 'yes'),
+        Button(label = "if it says interaction failed press this", style = 1, id="fix2"),
         Button(label = "no",style = 4, id='no')
         ]
       ],
