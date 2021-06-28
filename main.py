@@ -42,7 +42,7 @@ async def on_message(message):
   #adds a help command
   if(message.content =="-help"):
     channel = message.channel
-    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n **-help**: this\n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n**CHECK OUT OUR CODE AT:** https://github.com/coolprogramerman/discord-bot"
+    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n **-help**: this\n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR CODE AT:** https://github.com/coolprogramerman/discord-bot"
     embed_embed = discord.Embed(title="Commands", description = "".join(embed_description), color = 0x1f8b4c)
     await channel.send(embed = embed_embed)
   
@@ -72,12 +72,44 @@ async def on_message(message):
       interaction3 = await client.wait_for("button_click", check = lambda i: i.component.label.startswith("if"))
       await interaction3.respond(content = "try again if htis doesnt fix it then its up to you")
   
+  with open('staff_roles.txt', 'r') as file1:
+    STAFF_READ_FOR_ROLES = file1.read()
+  print(STAFF_READ_FOR_ROLES)
+  STAFF_ROLES = STAFF_READ_FOR_ROLES.split()
+  
+  #adds configuration
+  if(message.content == '-config'):
+    guild = message.guild
+    channel = message.channel
+    if(message.author.guild_permissions.administrator == True):
+      description = "**Staff**: type in `-config staff (the role id) add or remove`"
+      embed = discord.Embed(title="Configuration", description = "".join(description), color = 0x1f8b4c)
+      await channel.send(embed = embed)
+    else:
+      await channel.send("you need to have administrator to access this")
+  
+  #adds configuration to add staff
+  if(message.content.startswith('-config staff')):
+    guild = message.guild
+    channel = message.channel
+    if(message.author.guild_permissions.administrator == True):
+      if(message.role_mentions != []):
+        for role in message.role_mentions:
+          role1 = role
+          with open("staff_roles.txt", 'a') as file:
+            file.write(f"""{role1.id} """)
+          await channel.send(role1.name)
+      else:
+          await channel.send("try mentioning a role")
+    else:
+      await channel.send("you have to have admin")   
+
   #adds ban
   if(message.content.startswith('-ban')):
     guild = message.guild
     this = guild.get_member(843177851552530504)
     if(this.guild_permissions.ban_members == True):
-      if(message.author.guild_permissions.ban_members == True):
+      if(message.author.guild_permissions.ban_members == True or message.member.roles.id in STAFF_ROLES):
         channel = message.channel
         
         
@@ -102,7 +134,7 @@ async def on_message(message):
     guild = message.guild
     this = guild.get_member(843177851552530504)
     if(this.guild_permissions.kick_members == True):
-      if(message.author.guild_permissions.kick_members == True):
+      if(message.author.guild_permissions.kick_members == True or message.member.roles.id in STAFF_ROLES):
         channel = message.channel
         if(message.mentions != []):
          for user in message.mentions:
@@ -118,10 +150,11 @@ async def on_message(message):
     else:
       channel = message.channel
       await channel.send('I dont have kick perms tell an owner or admin to fix this if they want my bot to use -kick')
+  
 
 
 #ignore this its just used to make the bot be almost active 24/7
-#keep_alive()
+keep_alive()
 
 #runs the bot
 client.run(os.environ['token'])
