@@ -74,7 +74,6 @@ async def on_message(message):
   
   with open('staff_roles.txt', 'r') as file1:
     STAFF_READ_FOR_ROLES = file1.read()
-  print(STAFF_READ_FOR_ROLES)
   STAFF_ROLES = STAFF_READ_FOR_ROLES.split()
   
   #adds configuration
