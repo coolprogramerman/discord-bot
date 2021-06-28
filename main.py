@@ -76,11 +76,17 @@ async def on_message(message):
     if(this.guild_permissions.ban_members == True):
       if(message.author.guild_permissions.ban_members == True):
         channel = message.channel
-        for user in message.mentions:
-          target = user
-        guild = message.guild
-        await channel.send(f"""<@{target.id}> has been baned by <@{message.author.id}>""")
-        await guild.ban(target)
+        
+        
+        if(message.mentions != []):
+          for user in message.mentions:
+            target = user
+            guild = message.guild
+            await channel.send(f"""<@{target.id}> has been baned by <@{message.author.id}>""")
+            await guild.ban(target)
+        else:
+          await channel.send("Please mention a user")
+
       else:
         channel = message.channel
         await channel.send('you dont have ban perms')
@@ -94,11 +100,14 @@ async def on_message(message):
     if(this.guild_permissions.kick_members == True):
       if(message.author.guild_permissions.kick_members == True):
         channel = message.channel
-        for user in message.mentions:
-          target = user
-        guild = message.guild
-        await channel.send(f"""<@{target.id}> has been kicked by <@{message.author.id}>""")
-        await guild.kick(target)
+        if(message.mentions != []):
+         for user in message.mentions:
+           target = user
+           guild = message.guild
+           await channel.send(f"""<@{target.id}> has been kicked by <@{message.author.id}>""")
+           await guild.kick(target)
+        else:
+         await channel.send('Please mention a user')
       else:
         channel = message.channel
         await channel.send('you dont have kick perms')
@@ -108,7 +117,7 @@ async def on_message(message):
 
 
 #ignore this its just used to make the bot be almost active 24/7
-keep_alive()
+#keep_alive()
 
 #runs the bot
 client.run(os.environ['token'])
