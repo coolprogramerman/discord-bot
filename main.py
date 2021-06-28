@@ -41,7 +41,7 @@ async def on_message(message):
 
   if(message.content =="-help"):
     channel = message.channel
-    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n **-help**: this\n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member"
+    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n **-help**: this\n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n**CHECK OUT OUR CODE AT:** https://github.com/coolprogramerman/discord-bot"
     embed_embed = discord.Embed(title="Commands", description = "".join(embed_description), color = 0x1f8b4c)
     await channel.send(embed = embed_embed)
   
