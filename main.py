@@ -17,7 +17,7 @@ async def on_ready():
     DiscordComponents(client)
     print("Bot is ready")
 
-#this logs when someone posts a messages
+
 @client.event
 async def on_message(message):
   if message.author == client.user:
@@ -27,7 +27,8 @@ async def on_message(message):
   if(message.author == mushroomcraftBot): 
     return
   print(f"""|{message.guild}|{message.channel} | {message.author} | {message.content}""")
-
+  
+  #adds @someone
   if('@someone' in message.content):
     channel = message.channel
     guild1 = client.get_guild(message.guild.id)
@@ -38,13 +39,14 @@ async def on_message(message):
     else:
       await channel.send(f"""<@{someone.id}>""")
 
-
+  #adds a help command
   if(message.content =="-help"):
     channel = message.channel
     embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n **-help**: this\n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n**CHECK OUT OUR CODE AT:** https://github.com/coolprogramerman/discord-bot"
     embed_embed = discord.Embed(title="Commands", description = "".join(embed_description), color = 0x1f8b4c)
     await channel.send(embed = embed_embed)
   
+  #adds a vote command
   if(message.content == "-vote"):
     channel = message.channel
     await channel.send(
@@ -69,7 +71,8 @@ async def on_message(message):
 
       interaction3 = await client.wait_for("button_click", check = lambda i: i.component.label.startswith("if"))
       await interaction3.respond(content = "try again if htis doesnt fix it then its up to you")
-
+  
+  #adds ban
   if(message.content.startswith('-ban')):
     guild = message.guild
     this = guild.get_member(843177851552530504)
@@ -93,7 +96,8 @@ async def on_message(message):
     else:
       channel = message.channel
       await channel.send('I dont have ban perms tell an owner or admin to fix this if they want my bot to use -ban')
-
+  
+  #adds kick
   if(message.content.startswith('-kick')):
     guild = message.guild
     this = guild.get_member(843177851552530504)
