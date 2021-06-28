@@ -42,7 +42,7 @@ async def on_message(message):
   #adds a help command
   if(message.content =="-help"):
     channel = message.channel
-    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n **-help**: this\n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR CODE AT:** https://github.com/coolprogramerman/discord-bot"
+    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n **-help**: this\n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR SOURCE CODE AT:** https://github.com/coolprogramerman/discord-bot"
     embed_embed = discord.Embed(title="Commands", description = "".join(embed_description), color = 0x1f8b4c)
     await channel.send(embed = embed_embed)
   
@@ -81,7 +81,7 @@ async def on_message(message):
     guild = message.guild
     channel = message.channel
     if(message.author.guild_permissions.administrator == True):
-      description = "**Staff**: type in `-config staff (the role id) add or remove`"
+      description = "**Staff**: type in `-config staff (ping the role)` to allow them acces to staff commands"
       embed = discord.Embed(title="Configuration", description = "".join(description), color = 0x1f8b4c)
       await channel.send(embed = embed)
     else:
