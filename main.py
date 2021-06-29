@@ -27,7 +27,26 @@ async def on_message(message):
   if(message.author == mushroomcraftBot): 
     return
   print(f"""|{message.guild}|{message.channel} | {message.author} | {message.content}""")
+
+  #adds support for no swearing
+  with open("swear_words.txt", "r") as file3:
+    swear_words1 = file3.read()
+    swear_words = swear_words1.split()
   
+  with open("family_friendly_guilds.txt", "r") as file4:
+    family_friendly_guilds1 = file4.read()
+    family_friendly_guilds = family_friendly_guilds1.split()
+
+  #print(f"""the guild  id is {message.guild.id} and the familt=y friendly guilds are {family_friendly_guilds}""")
+
+  if str(message.guild.id) in family_friendly_guilds:
+    for swear in swear_words:
+      if swear in message.content:
+        channel = message.channel
+        await message.delete()
+        await channel.send("this is a family freiendly server. so no swears")
+
+
   #adds @someone
   if('@someone' in message.content):
     channel = message.channel
@@ -81,7 +100,7 @@ async def on_message(message):
     guild = message.guild
     channel = message.channel
     if(message.author.guild_permissions.administrator == True):
-      description = "**Staff**: type in `-config staff (ping the role)` to allow them acces to staff commands"
+      description = "**Staff**: type in `-config staff (ping the role)` to allow them acces to staff commands\n**Family friendly**:type in `-config family friendly(true/false)` to make any swears be deleted(the list is small ill fix it when i can)"
       embed = discord.Embed(title="Configuration", description = "".join(description), color = 0x1f8b4c)
       await channel.send(embed = embed)
     else:
@@ -101,7 +120,42 @@ async def on_message(message):
       else:
           await channel.send("try mentioning a role")
     else:
-      await channel.send("you have to have admin")   
+      await channel.send("you have to have admin")
+
+  #adds configuration for family friendly servers    
+  if(message.content == '-config family friendly true' or message.content == '-config family friendly yes' or message.content == '-config family friendly y'):
+    this = guild.get_member(843177851552530504)
+    if(this.guild_permissions.manage_messages == True):
+      if(message.author.guild_permissions.administrator == True):
+        if(message.guild.id in family_friendly_guilds):
+          channel = message.channel
+          await channel.send("this server is allready family friendly")
+        else:
+          with open("family_friendly_guilds.txt", "a") as file5:
+            file5.write(f"""{message.guild.id} """)
+          channel = message.channel
+          await channel.send("this server is now family friendly")
+      else:
+        channel = message.channel
+        await channel.send("you need to have admin to access this command")
+    else:
+      channel = message.channel
+      channel.send("i dont have the permissions to do that you can tell an admin to fix this")
+
+  if(message.content == '-config family friendly false' or message.content == '-config family friendly no' or message.content == '-config family friendly n'):
+    if(message.author.guild_permissions.administrator == True):
+      if(message.guild.id in family_friendly_guilds):
+        family_friendly_guilds1.remove(message.guild.id)
+        file_write = open('family_friendly_guilds.txt', 'w')
+        file_write.write(family_friendly_guilds1)
+        channel = message.channel
+        await channel.send("this server is now not family friendly")
+      else:
+        channel = message.channel
+        await channel.send("this server isnt family friendly")
+    else:
+       channel = message.channel
+       await channel.send("you need to have admin to access this command")
 
   #adds ban
   if(message.content.startswith('-ban')):
