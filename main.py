@@ -8,7 +8,7 @@ import discord.ext.commands
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
 client = discord.ext.commands.Bot(command_prefix = "-", intents = intents,
-activity=discord.Game(name='adding @someone'))
+activity=discord.Game(name='-help'))
 
 
 #prints bot is ready when he's ready
@@ -227,7 +227,7 @@ async def on_message(message):
     for user in message.mentions:
       user1 = user
       channel = message.channel
-      embed_description1 = f"""**Joined server at**:\n{user1.joined_at}\n**Made account at**: \n{user1.created_at}\n**Username**:\n{user1.name}\n**User id**:\n{user1.id}\n**Status**:\n{user1.status}\n**Status on web(if the same as status that means theyre on web)**:\n{user1.web_status}\n**Is mobile**:\n{user1.is_on_mobile()}\n**Is a bot**:\n{user1.bot}""" 
+      embed_description1 = f"""**Joined server at**:\n{user1.joined_at}\n**Made account at**: \n{user1.created_at}\n**Username**:\n{user1.name}\n**User id**:\n{user1.id}\n**Status**:\n{user1.status}\n**Status on web(if the same as status that means theyre on web)**:\n{user1.web_status}\n**Is mobile**:\n{user1.is_on_mobile()}\n**Is a bot**:\n{user1.bot}\n**Is playin game**:\n{user1.activity}""" 
       embed_embed1 = discord.Embed(title="Who is", description = "".join(embed_description1), color = 0x1f8b4c)
       await channel.send(embed = embed_embed1)
       return
