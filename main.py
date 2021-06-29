@@ -4,6 +4,7 @@ import os
 from alive import keep_alive
 from discord_components import DiscordComponents, Button
 import random
+import json 
 import discord.ext.commands
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
@@ -16,6 +17,12 @@ activity=discord.Game(name='-help'))
 async def on_ready():
     DiscordComponents(client)
     print("Bot is ready")
+    guild = client.get_guild(850875538280546344)
+    channel1 = 859037617868636230
+    channel = guild.get_channel(channel1)
+    #embed_description = "**Added 2 commands**:-whois, -config(2 subcommands)\n **invite my bot at**: https://discord.com/oauth2/authorize?client_id=843177851552530504&permissions=8&scope=bot"
+    #embed1 = discord.Embed(title="UPDATE", description = "".join(embed_description), color = 0x1f8b4c)
+    #await channel.send(embed = embed1)
 
 
 @client.event
@@ -37,7 +44,9 @@ async def on_message(message):
     family_friendly_guilds1 = file4.read()
     family_friendly_guilds = family_friendly_guilds1.split()
 
-  #print(f"""the guild  id is {message.guild.id} and the familt=y friendly guilds are {family_friendly_guilds}""")
+  #adds loading of currency
+  currency_file = open("currency.json", "r")
+  currency = json.loads(currency_file.read())
 
 
 
@@ -56,7 +65,7 @@ async def on_message(message):
   #adds a help command
   if(message.content =="-help"):
     channel = message.channel
-    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n **-help**: this\n**-whois**: sends information about a member and takes one argument the member \n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR SOURCE CODE AT:** https://github.com/coolprogramerman/discord-bot"
+    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n**-whois**: sends information about a member and takes one argument the member \n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR SOURCE CODE AT:** https://github.com/coolprogramerman/discord-bot"
     embed_embed = discord.Embed(title="Commands", description = "".join(embed_description), color = 0x1f8b4c)
     await channel.send(embed = embed_embed)
     return
@@ -231,6 +240,30 @@ async def on_message(message):
       embed_embed1 = discord.Embed(title="Who is", description = "".join(embed_description1), color = 0x1f8b4c)
       await channel.send(embed = embed_embed1)
       return
+  
+  #adds support for gifs
+  if(message.content.startswith('-gif')):
+    gif = message.content
+    gif2 = gif.split()
+    if gif2 == ['-gif']:
+      channel = message.channel
+      await channel.send("please provide a url")
+      return
+    if 'http' not in gif:
+      channel = message.channel
+      await channel.send("please provide a valid url")
+      return
+    
+
+    gif = gif.split(" ", 1)[1]
+    channel = message.channel
+    await channel.send(gif)    
+  
+  #TODO adds support for checking your money in currency
+  if(message.content == '-cash'):
+    channel = message.channel
+    print(currency)
+  
 
   #always keep this at end in case of spam
   if str(message.guild.id) in family_friendly_guilds:
@@ -239,7 +272,17 @@ async def on_message(message):
           channel = message.channel
           await message.delete()
           await channel.send("this is a family freiendly server. so no swears")
-          
+
+#makes there be a message when the bot joins a guild
+@client.event
+async def on_guild_join(guild):
+  for channel in guild.text_channels:
+    if channel.permissions_for(guild.me).send_messages:
+      embed_description = "Hello and thanks for inviting me\ni would reccomend you start with -help so you know what my bot does"
+      embed1 = discord.Embed(title="Hello", description = "".join(embed_description), color = 0x1f8b4c)
+      await channel.send(embed = embed1)
+      break
+
 
 #ignore this its just used to make the bot be almost active 24/7
 keep_alive()
