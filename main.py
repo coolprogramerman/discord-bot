@@ -65,7 +65,7 @@ async def on_message(message):
   #adds a help command
   if(message.content =="-help"):
     channel = message.channel
-    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n**-whois**: sends information about a member and takes one argument the member \n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR SOURCE CODE AT:** https://github.com/coolprogramerman/discord-bot"
+    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n**-whois**: sends information about a member/channel and takes one argument the member/channel \n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR SOURCE CODE AT:** https://github.com/coolprogramerman/discord-bot"
     embed_embed = discord.Embed(title="Commands", description = "".join(embed_description), color = 0x1f8b4c)
     await channel.send(embed = embed_embed)
     return
@@ -239,7 +239,15 @@ async def on_message(message):
       embed_description1 = f"""**Joined server at**:\n{user1.joined_at}\n**Made account at**: \n{user1.created_at}\n**Username**:\n{user1.name}\n**User id**:\n{user1.id}\n**Status**:\n{user1.status}\n**Status on web(if the same as status that means theyre on web)**:\n{user1.web_status}\n**Is mobile**:\n{user1.is_on_mobile()}\n**Is a bot**:\n{user1.bot}\n**Is playin game**:\n{user1.activity}""" 
       embed_embed1 = discord.Embed(title="Who is", description = "".join(embed_description1), color = 0x1f8b4c)
       await channel.send(embed = embed_embed1)
-      return
+    for channels in message.channel_mentions:
+      channel = channels
+      if (channel.last_message == None):
+        embed_description2 = f"""**Made channel at**: \n{channel.created_at}\n**Name**:\n{channel.name}\n**Is nsfw**:\n{channel.is_nsfw()}"""  
+      else:
+        embed_description2 = f"""**Made channel at**: \n{channel.created_at}\n**Last message** \n`{channel} | {channel.last_message.author} | {channel.last_message.content}`\n**Name**:\n{channel.name}\n**Is nsfw**:\n{channel.is_nsfw()}""" 
+      embed_embed2 = discord.Embed(title="Who is", description = "".join(embed_description2), color = 0x1f8b4c)
+      channel3 = message.channel
+      await channel3.send(embed = embed_embed2)
   
   #adds support for gifs
   if(message.content.startswith('-gif')):
@@ -271,7 +279,7 @@ async def on_message(message):
        if swear in message.content:
           channel = message.channel
           await message.delete()
-          await channel.send("this is a family freiendly server. so no swears")
+          await channel.send("this is a family friendly server. so no swears")
 
 #makes there be a message when the bot joins a guild
 @client.event
