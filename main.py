@@ -4,7 +4,8 @@ import os
 from alive import keep_alive
 from discord_components import DiscordComponents, Button
 import random
-import json 
+from replit import db
+import time
 import discord.ext.commands
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
@@ -44,10 +45,6 @@ async def on_message(message):
     family_friendly_guilds1 = file4.read()
     family_friendly_guilds = family_friendly_guilds1.split()
 
-  #adds loading of currency
-  currency_file = open("currency.json", "r")
-  currency = json.loads(currency_file.read())
-
 
 
   #adds @someone
@@ -65,7 +62,7 @@ async def on_message(message):
   #adds a help command
   if(message.content =="-help"):
     channel = message.channel
-    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n**-whois**: sends information about a member/channel and takes one argument the member/channel \n \n **STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR SOURCE CODE AT:** https://github.com/coolprogramerman/discord-bot"
+    embed_description = "**REGULAR COMMANDS**\n**@someone**: brings back @someone as simple as that \n **-vote**: adds a vote with the new discord buttons \n**-whois**: sends information about a member/channel and takes one argument the member/channel \n **-dm**: sends someone a dm and takes 2 arguments first the user second the message\n \n**CURRENCY COMMANDS**\n **-balance**: shows your balance takes no arguments\n**-give** gives another member money takes two arguments the first a user the second a number\n**-beg**: adds begging thats it \n**-rob**: robs someone and takes one argument the member \n \n**STAFF COMMANDS**\n **-kick**: kicks a member and takes one argument the member\n **-ban**: bans a member and takes one argument the member\n\n **ADMIN COMMANDS**\n**-config**: sends an embed with all the configuration commands\n\n**CHECK OUT OUR SOURCE CODE AT:** https://github.com/coolprogramerman/discord-bot"
     embed_embed = discord.Embed(title="Commands", description = "".join(embed_description), color = 0x1f8b4c)
     await channel.send(embed = embed_embed)
     return
@@ -262,24 +259,160 @@ async def on_message(message):
       await channel.send("please provide a valid url")
       return
     
-
     gif = gif.split(" ", 1)[1]
     channel = message.channel
     await channel.send(gif)    
   
-  #TODO adds support for checking your money in currency
-  if(message.content == '-cash'):
+  #adds support for checking your money in currency
+  if(message.content == '-balance'):
     channel = message.channel
-    print(currency)
+    user = str(message.author.id)
+    keys = db.keys()
+    if(user not in keys):
+      db[user] = "0"
+    embed_description5 = f"""Your balance is {db[user]}"""
+    embed_embed5 = discord.Embed(title="Balance", description = "".join(embed_description5), color = 0x1f8b4c)
+    await channel.send(embed = embed_embed5) 
+
+  #adds support for giving money
+  if(message.content.startswith('-give')):
+    list_of_words = message.content.split()
+    user = str(message.author.id)
+    keys = db.keys()
+    #theese are errors
+    if(len(list_of_words) != 3):
+      channel = message.channel
+      await channel.send('please provide the correct ammount of parameters')
+      return
+    if(message.mentions == []):
+      channel = message.channel
+      await channel.send('please mention a user')
+      return
+    if(list_of_words[2].isdigit() == False):
+      channel = message.channel
+      await channel.send('please use a number')
+      return
+    if(user not in keys):
+       db[user] = "0"
+       channel = message.channel
+       await channel.send('insuffiecent funds')
+       return
+    if(int(db[user]) < int(list_of_words[2])):
+      channel = message.channel
+      await channel.send('insuffiecent funds')
+      return
+    #this is when there are no errors  
+    user_recieving = str(message.mentions[0].id)
+    if(user_recieving not in keys):
+      db[user_recieving] = "0"                 
+    
+    my_money = db[user]
+    their_money = db[user_recieving]
+    
+    db[user] = str(int(my_money) - int(list_of_words[2]))
+    db[user_recieving] = str(int(their_money) + int(list_of_words[2]))
+    money_given = list_of_words[2]
+    embed_description4 = f"""gave {money_given} to <@{user_recieving}>"""
+    embed_embed4 = discord.Embed(title="gave money", description = "".join(embed_description4), color = 0x1f8b4c)
+    channel = message.channel
+    await channel.send(embed = embed_embed4)
+        
+  #adds support for beging
+  if(message.content == '-beg'):
+    random_num = random.randrange(1, 1000)
+    embed_description3 = f"""you got {random_num}"""
+    embed_embed3 = discord.Embed(title="you begged noob", description = "".join(embed_description3), color = 0x1f8b4c)
+    channel = message.channel
+    await channel.send(embed = embed_embed3)
+    user = str(message.author.id)
+    keys = db.keys()
+    if(user not in keys):
+      db[user] = "0" 
+    my_money = db[user]
+    db[user] = str(int(my_money) + random_num)
   
+  #adds support for robbing
+  if(message.content.startswith('-rob')):
+     random_num = random.randrange(1, 10)
+     list_of_words = message.content.split()
+     user = str(message.author.id)
+     keys = db.keys()
+     #theese are errors
+     if(len(list_of_words) != 2):
+       channel = message.channel
+       await channel.send('please provide the correct ammount of parameters')
+       return
+     if(message.mentions == []):
+       channel = message.channel
+       await channel.send('please mention a user')
+       return  
+     user_recieving = str(message.mentions[0].id)
+     if(user_recieving not in keys):
+       db[user_recieving] = "0"
+       embed_description6 = "ayo why tf are you stealing money from a poor person i think i should remove your money"
+       embed_embed6 = discord.Embed(title="try someone else", description = "".join(embed_description6), color = 0x1f8b4c)
+       channel = message.channel
+       await channel.send(embed = embed_embed6)
+       return
+     their_money = db[user_recieving]
+     if(int(their_money) < 1):
+       embed_description6 = "ayo why tf are you stealing money from a poor person i think i should remove your money"
+       embed_embed6 = discord.Embed(title="try someone else", description = "".join(embed_description6), color = 0x1f8b4c)
+       channel = message.channel
+       await channel.send(embed = embed_embed6)
+       return  
+     #there are no errors if we made it to here
+     if(random_num < 9):
+       embed_description7 = "you tried to steal the money but somebody told you to gtfo or their gonna call the police and they let their pitbull dog at you so you had to escape"
+       embed_embed7 = discord.Embed(title="try amother time", description = "".join(embed_description7), color = 0x1f8b4c)
+       channel = message.channel
+       await channel.send(embed = embed_embed7)
+       return
+     my_money = db[user]
+     their_money = db[user_recieving]
+     random_num2 = random.randrange(0, int(their_money))
+     my_money = str(int(my_money) + random_num2)
+     their_money = str(int(their_money) - random_num2)
+     db[user] = my_money
+     db[user_recieving] = their_money
+     embed_description8 = f"""ayo you robbed <@{user_recieving}> and got {random_num2}"""
+     embed_embed8 = discord.Embed(title="sucks to be the one who got robbed", description = "".join(embed_description8), color = 0x1f8b4c)
+     channel = message.channel
+     await channel.send(embed = embed_embed8)
+
+  #adds support for dming
+  if(message.content.startswith('-dm')):
+    list_of_words = message.content.split()
+    if(message.mentions == []):
+      channel = message.channel
+      await channel.send('please mention a user')
+      return  
+    if(len(list_of_words) < 3):
+      channel = message.channel
+      await channel.send('please provide the correct ammount of parameters')
+      return
+    user1 = message.mentions[0].id
+    user = client.get_user(user1)
+    del list_of_words[0]
+    del list_of_words[0]
+    words1 = ""
+    words = ""
+    for i in list_of_words:
+      words1=words1+i
+               
+    for i in list_of_words:
+      words=words+i+" "
+    await user.send(words)         
 
   #always keep this at end in case of spam
-  if str(message.guild.id) in family_friendly_guilds:
-     for swear in swear_words:
-       if swear in message.content:
-          channel = message.channel
-          await message.delete()
-          await channel.send("this is a family friendly server. so no swears")
+  if(str(message.guild.id) in family_friendly_guilds):
+    for swear in swear_words:
+     if swear in message.content:
+        channel = message.channel
+        await message.delete()
+        await channel.send("this is a family friendly server. so no swears")
+
+
 
 #makes there be a message when the bot joins a guild
 @client.event
